@@ -1,11 +1,20 @@
+export type SocialEventType =
+  | "Online"
+  | "Offline"
+  | "Music"
+  | "Sport"
+  | "E-sports"
+  | "Festival";
+
 export interface BaseSocialEvent {
-    name: string;
-    price: number;
-    description: string;
-    image: string;
-  }
-  
-  export interface SocialEvent extends BaseSocialEvent {
-    id: number;
-  }
-  
+  title: string;
+  artist: string;
+  description: string;
+  image: string;
+  rating: number;
+  type: SocialEventType;
+}
+
+export interface SocialEvent extends BaseSocialEvent {
+  id: number;
+}
