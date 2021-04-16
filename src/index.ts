@@ -2,7 +2,7 @@
  * Required External Modules
  */
 
-import * as dotenv from "dotenv";
+import { config } from "dotenv";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -10,7 +10,7 @@ import { notFoundHandler } from "./middleware/not-found.middleware";
 import { errorHandler } from "./middleware/error.middleware";
 import { socialEventsRouter } from "./social-events/social-events.router";
 
-dotenv.config();
+config({ encoding: "utf-8" });
 
 /**
  * App Variables
