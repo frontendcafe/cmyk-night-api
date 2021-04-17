@@ -1,23 +1,20 @@
 /**
  * Required External Modules
  */
-
-import * as dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import { notFoundHandler } from "./middleware/not-found.middleware";
 import { errorHandler } from "./middleware/error.middleware";
-import { socialEventsRouter } from "./social-events/social-events.router";
-
-dotenv.config();
+import { config } from "dotenv";
+import { indexRouter } from "./routes/index.router";
+config({ encoding: "utf-8", debug: true });
 
 /**
  * App Variables
  */
 
 if (!process.env.PORT) {
-  console.log("hola");
   process.exit(1);
 }
 
@@ -32,11 +29,12 @@ const app = express();
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
-app.use("/api/social-events", socialEventsRouter);
+app.use(express.urlencoded({ extended: false }));
 
 /**
  *  App routes
  */
+app.use("/api/", indexRouter);
 app.get("/", (req, res) => res.send("Express + TypeScript Server"));
 
 app.use(errorHandler);
