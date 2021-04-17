@@ -1,14 +1,15 @@
 /**
  * Required External Modules
  */
+
+import { config } from "dotenv";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import { notFoundHandler } from "./middleware/not-found.middleware";
 import { errorHandler } from "./middleware/error.middleware";
-import { config } from "dotenv";
 import { indexRouter } from "./routes/index.router";
-config({ encoding: "utf-8", debug: true });
+config({ encoding: "utf-8" });
 
 /**
  * App Variables
