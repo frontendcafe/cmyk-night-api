@@ -1,4 +1,13 @@
 --@block
+CREATE TYPE type AS ENUM (
+    'Online',
+    'Offline',
+    'Music',
+    'Sport',
+    'E-sports',
+    'Festival'
+);
+--@block
 DROP TABLE user_event;
 --@block
 DROP TABLE users;
@@ -26,7 +35,7 @@ CREATE TABLE "events"(
     "description" TEXT NOT NULL,
     "performer" VARCHAR(255) NOT NULL,
     "rating" DOUBLE PRECISION NOT NULL,
-    "type" VARCHAR(255) NOT NULL,
+    "type" type NOT NULL,
     "banner_image" VARCHAR(255) NULL,
     "avatar_image" VARCHAR(255) NOT NULL,
     "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_DATE,

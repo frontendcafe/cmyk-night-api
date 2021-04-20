@@ -20,7 +20,7 @@ model events {
   description  String
   performer    String       @db.VarChar(255)
   rating       Float
-  type         String       @db.VarChar(255)
+  type         type
   banner_image String?      @db.VarChar(255)
   avatar_image String       @db.VarChar(255)
   created_at   DateTime     @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
@@ -34,7 +34,7 @@ model types {
 }
 
 model user_event {
-  id         Int      @id
+  id         Int      @id @default(autoincrement())
   event_id   Int
   user_id    Int
   created_at DateTime @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
