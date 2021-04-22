@@ -1,3 +1,12 @@
+import { Router } from "express";
+import { getEvents } from "../controllers/events.controllers";
+
+export const eventsRouter = Router();
+
+eventsRouter.get("/test", (_, res) => res.status(200).send("123"));
+
+eventsRouter.get("", getEvents);
+
 // /**
 //  * Required External Modules and Interfaces
 //  */

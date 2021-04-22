@@ -4,6 +4,11 @@
 import { Request, Response } from "express";
 import { database } from "../database/database";
 import { QueryResult } from "pg";
+
+import { PrismaClient, users } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
 /**
  * Controller Definitions
  */
@@ -12,12 +17,11 @@ export const getUsers = async (
   _: Request,
   res: Response
 ): Promise<Response> => {
-  const response = (await database
-    .query("SELECT * FROM users")
-    .catch((e) => res.status(500).send(e.message))) as QueryResult;
-  return res
-    .status(200)
-    .json({ elements: response.rows, total: response.rowCount });
+  const response = await prisma.users.findMany();
+
+  // response.catch((e) => res.status(500).send(e.message));
+  console.log(response);
+  return res.status(200).json({ elements: response, total: response.length });
 };
 
 export const getUserById = async (
@@ -25,6 +29,7 @@ export const getUserById = async (
   res: Response
 ): Promise<Response> => {
   const id = parseInt(req.params.id, 10);
+
   const response = (await database
     .query("SELECT * FROM users WHERE id = $1", [id])
     .catch((e) => res.status(500).send(e.message))) as QueryResult;
