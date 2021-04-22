@@ -43,6 +43,28 @@ model user_event {
   users      users    @relation(fields: [user_id], references: [id])
 }
 
+model schedule {
+  id    Int     @id @default(autoincrement())
+  days  days[]
+  hours hours[]
+}
+
+model days {
+  id         Int       @id @default(autoincrement())
+  day        DateTime
+  available  Boolean
+  schedule   schedule? @relation(fields: [scheduleId], references: [id])
+  scheduleId Int?
+}
+
+model hours {
+  id         Int       @id @default(autoincrement())
+  hours      DateTime
+  available  Boolean
+  schedule   schedule? @relation(fields: [scheduleId], references: [id])
+  scheduleId Int?
+}
+
 model users {
   id         Int          @id @default(autoincrement())
   email      String       @unique @db.VarChar(255)
@@ -58,6 +80,6 @@ enum type {
   Offline
   Music
   Sport
-  E_sports @map("E-sports")
+  E_sports  @map("E-sports")
   Festival
 }
