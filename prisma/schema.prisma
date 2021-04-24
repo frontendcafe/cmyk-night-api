@@ -7,72 +7,53 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model event_type {
-  id         Int      @id
-  name       String   @unique @db.VarChar(255)
-  created_at DateTime @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
-  updated_at DateTime @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+model social_events {
+  id                    Int                     @id @default(autoincrement())
+  title                 String                  @db.VarChar(255)
+  description           String
+  avatar_image          String                  @db.VarChar(255)
+  banner_image          String                  @db.VarChar(255)
+  rating                Float
+  type                  type
+  social_event_schedule social_event_schedule[]
 }
 
-model events {
-  id           Int          @id @default(autoincrement())
-  title        String       @db.VarChar(255)
-  description  String
-  performer    String       @db.VarChar(255)
-  rating       Float
-  type         type
-  banner_image String?      @db.VarChar(255)
-  avatar_image String       @db.VarChar(255)
-  created_at   DateTime     @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
-  updated_at   DateTime     @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
-  user_event   user_event[]
+model schedules {
+  id                    Int                     @id @default(autoincrement())
+  datetime              DateTime
+  social_event_schedule social_event_schedule[]
+  type                  type                    @default(Online)
 }
 
-model types {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar(255)
+model social_event_schedule {
+  id              Int           @id @default(autoincrement())
+  social_event    social_events @relation(fields: [social_event_id], references: [id])
+  schedule        schedules     @relation(fields: [schedule_id], references: [id])
+  social_event_id Int
+  schedule_id     Int
+  remaining       Int
+  enabled         Boolean       @default(true)
+  orders          orders[]
 }
 
-model user_event {
-  id         Int      @id @default(autoincrement())
-  event_id   Int
-  user_id    Int
-  created_at DateTime @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
-  updated_at DateTime @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
-  events     events   @relation(fields: [event_id], references: [id])
-  users      users    @relation(fields: [user_id], references: [id])
-}
-
-model schedule {
-  id    Int     @id @default(autoincrement())
-  days  days[]
-  hours hours[]
-}
-
-model days {
-  id         Int       @id @default(autoincrement())
-  day        DateTime
-  available  Boolean
-  schedule   schedule? @relation(fields: [scheduleId], references: [id])
-  scheduleId Int?
-}
-
-model hours {
-  id         Int       @id @default(autoincrement())
-  hours      DateTime
-  available  Boolean
-  schedule   schedule? @relation(fields: [scheduleId], references: [id])
-  scheduleId Int?
+model orders {
+  id                       Int                   @id @default(autoincrement())
+  user                     users                 @relation(fields: [user_id], references: [id])
+  user_id                  Int
+  social_event_schedule    social_event_schedule @relation(fields: [social_event_schedule_id], references: [id])
+  social_event_schedule_id Int
+  price                    Float
+  created                  DateTime              @default(now())
 }
 
 model users {
-  id         Int          @id @default(autoincrement())
-  email      String       @unique @db.VarChar(255)
-  name       String       @db.VarChar(255)
+  id         Int      @id @default(autoincrement())
+  email      String   @unique @db.VarChar(255)
+  name       String   @db.VarChar(255)
   age        Int
-  created_at DateTime     @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
-  updated_at DateTime     @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
-  user_event user_event[]
+  created_at DateTime @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  updated_at DateTime @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  orders     orders[]
 }
 
 enum type {
