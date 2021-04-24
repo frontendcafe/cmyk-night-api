@@ -20,7 +20,7 @@ if (!process.env.PORT) {
 }
 
 const PORT: number = parseInt(process.env.PORT as string, 10);
-
+console.log(PORT)
 const app = express();
 
 /**

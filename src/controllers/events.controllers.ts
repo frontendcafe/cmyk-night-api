@@ -2,7 +2,10 @@
  * Required External Modules and Interfaces
  */
 import { Request, Response } from "express";
-import { db } from "../mockup/db";
+
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 /**
  * Controller Definitions
@@ -12,8 +15,33 @@ export const getEvents = async (
   _: Request,
   res: Response
 ): Promise<Response> => {
-  const response = db;
-  return res.status(200).json({ elements: response, total: response.length });
+  const response = await prisma.social_event_schedule.findMany({
+    distinct: ["schedule_id", "social_event_id", "id"],
+    where: {
+      remaining: {
+        gt: 1,
+      },
+    },
+    select: {
+      remaining: true,
+      enabled: true,
+      social_event: {
+        select: {
+          title: true,
+          description: true,
+          avatar_image: true,
+          banner_image: true,
+          rating: true,
+          type: true,
+        },
+      },
+      schedule: {
+        select: { datetime: true },
+      },
+    },
+  });
+
+  return res.status(200).json(response);
 };
 
 // export const getUserById = async (

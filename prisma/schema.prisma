@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["selectRelationCount"]
 }
 
 datasource db {
@@ -14,7 +15,7 @@ model social_events {
   avatar_image          String                  @db.VarChar(255)
   banner_image          String                  @db.VarChar(255)
   rating                Float
-  type                  type
+  type                  type?                   @default(Online)
   social_event_schedule social_event_schedule[]
 }
 
@@ -22,7 +23,6 @@ model schedules {
   id                    Int                     @id @default(autoincrement())
   datetime              DateTime
   social_event_schedule social_event_schedule[]
-  type                  type                    @default(Online)
 }
 
 model social_event_schedule {
@@ -42,8 +42,10 @@ model orders {
   user_id                  Int
   social_event_schedule    social_event_schedule @relation(fields: [social_event_schedule_id], references: [id])
   social_event_schedule_id Int
+  quantity                 Int
   price                    Float
-  created                  DateTime              @default(now())
+  created_at               DateTime              @default(now())
+  updated_at               DateTime              @updatedAt
 }
 
 model users {
@@ -51,8 +53,8 @@ model users {
   email      String   @unique @db.VarChar(255)
   name       String   @db.VarChar(255)
   age        Int
-  created_at DateTime @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
-  updated_at DateTime @default(dbgenerated("CURRENT_DATE")) @db.Timestamp(6)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
   orders     orders[]
 }
 
