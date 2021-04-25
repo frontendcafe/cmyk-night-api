@@ -8,54 +8,74 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model social_events {
-  id                    Int                     @id @default(autoincrement())
-  title                 String                  @db.VarChar(255)
-  description           String
-  avatar_image          String                  @db.VarChar(255)
-  banner_image          String                  @db.VarChar(255)
-  rating                Float
-  type                  type?                   @default(Online)
-  social_event_schedule social_event_schedule[]
+model SocialEvents {
+  id                  Int                   @id @default(autoincrement())
+  title               String                @db.VarChar(255)
+  description         String
+  avatar              String                @map("avatar_image") @db.VarChar(255)
+  banner              String                @map("banner_image") @db.VarChar(255)
+  rating              Float
+  type                type?                 @default(Online)
+  socialEventSchedule SocialEventSchedule[]
+  performer           Artists               @relation(fields: [performerId], references: [id])
+  performerId         Int                   @map("performer_id")
+
+  @@map("social_events")
 }
 
-model schedules {
-  id                    Int                     @id @default(autoincrement())
-  datetime              DateTime
-  social_event_schedule social_event_schedule[]
+model Artists {
+  id           Int            @id @default(autoincrement())
+  firstName    String         @map("first_name") @db.VarChar(255)
+  lastName     String         @map("last_name") @db.VarChar(255)
+  email        String         @unique @db.VarChar(255)
+  age          Int
+  SocialEvents SocialEvents[]
 }
 
-model social_event_schedule {
-  id              Int           @id @default(autoincrement())
-  social_event    social_events @relation(fields: [social_event_id], references: [id])
-  schedule        schedules     @relation(fields: [schedule_id], references: [id])
-  social_event_id Int
-  schedule_id     Int
-  remaining       Int
-  enabled         Boolean       @default(true)
-  orders          orders[]
+model Schedules {
+  id                  Int                   @id @default(autoincrement())
+  datetime            DateTime
+  socialEventSchedule SocialEventSchedule[]
 }
 
-model orders {
-  id                       Int                   @id @default(autoincrement())
-  user                     users                 @relation(fields: [user_id], references: [id])
-  user_id                  Int
-  social_event_schedule    social_event_schedule @relation(fields: [social_event_schedule_id], references: [id])
-  social_event_schedule_id Int
-  quantity                 Int
-  price                    Float
-  created_at               DateTime              @default(now())
-  updated_at               DateTime              @updatedAt
+model SocialEventSchedule {
+  id            Int          @id @default(autoincrement())
+  socialEvent   SocialEvents @relation(fields: [socialEventId], references: [id])
+  schedule      Schedules    @relation(fields: [scheduleId], references: [id])
+  socialEventId Int          @map("social_event_id")
+  scheduleId    Int          @map("schedule_id")
+  remaining     Int
+  enabled       Boolean      @default(true)
+  price         Int
+  orders        Orders[]
+
+  @@map("social_event_schedule")
 }
 
-model users {
-  id         Int      @id @default(autoincrement())
-  email      String   @unique @db.VarChar(255)
-  name       String   @db.VarChar(255)
-  age        Int
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  orders     orders[]
+model Orders {
+  id                    Int                 @id @default(autoincrement())
+  user                  Users               @relation(fields: [userId], references: [id])
+  userId                Int                 @map("user_id")
+  socialEventSchedule   SocialEventSchedule @relation(fields: [socialEventScheduleId], references: [id])
+  socialEventScheduleId Int                 @map("social_event_schedule_id")
+  quantity              Int
+  price                 Float
+  createdAt             DateTime            @default(now()) @map("created_at")
+  updatedAt             DateTime            @updatedAt @map("updated_at")
+
+  @@map("orders")
+}
+
+model Users {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique @db.VarChar(255)
+  name      String   @db.VarChar(255)
+  age       Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  orders    Orders[]
+
+  @@map("users")
 }
 
 enum type {
