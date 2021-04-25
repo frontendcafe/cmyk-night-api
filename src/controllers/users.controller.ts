@@ -15,11 +15,13 @@ export const getUsers = async (
   _: Request,
   res: Response
 ): Promise<Response> => {
-  const response = await prisma.users.findMany();
+  const response = await prisma.users
+    .findMany()
+    .catch((e) => res.status(500).send(e.message));
 
   // response.catch((e) => res.status(500).send(e.message));
   console.log(response);
-  return res.status(200).json({ elements: response, total: response.length });
+  return res.status(200).json(response);
 };
 
 // export const getUserById = async (

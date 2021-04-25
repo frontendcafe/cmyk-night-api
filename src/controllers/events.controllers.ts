@@ -15,15 +15,17 @@ export const getEvents = async (
   _: Request,
   res: Response
 ): Promise<Response> => {
-  const response = await prisma.socialEvents.findMany({
-    select: {
-      title: true,
-      avatar: true,
-      banner: true,
-      description: true,
-      rating: true,
-    },
-  });
+  const response = await prisma.socialEvents
+    .findMany({
+      select: {
+        title: true,
+        avatar: true,
+        banner: true,
+        description: true,
+        rating: true,
+      },
+    })
+    .catch((e) => res.status(500).send(e.message));
 
   return res.status(200).json(response);
 };
@@ -33,13 +35,15 @@ export const getEventById = async (
   res: Response
 ): Promise<Response> => {
   const { id } = req.params;
-  const response = await prisma.socialEvents.findUnique({
-    where: { id: +id },
-    include: {
-      performer: true,
-      socialEventSchedule: true,
-    },
-  });
+  const response = await prisma.socialEvents
+    .findUnique({
+      where: { id: +id },
+      include: {
+        performer: true,
+        socialEventSchedule: true,
+      },
+    })
+    .catch((e) => res.status(500).send(e.message));
 
   return res.status(200).json(response);
 };
