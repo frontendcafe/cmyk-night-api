@@ -2,9 +2,8 @@
  * Required External Modules and Interfaces
  */
 import { Request, Response } from "express";
-import { QueryResult } from "pg";
 
-import { PrismaClient, users } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
