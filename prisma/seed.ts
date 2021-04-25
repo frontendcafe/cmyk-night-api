@@ -2,6 +2,16 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
+  await prisma.artists.createMany({
+    data: [
+      {
+        firstName: "Leopoldo",
+        lastName: "Marechal",
+        age: 112,
+        email: "leopoldo.marechal@gmail.com",
+      },
+    ],
+  });
   await prisma.users.createMany({
     data: [
       { email: "nicolas@gmail.com", age: 26, name: "Nicolas" },
@@ -14,30 +24,33 @@ async function main() {
       { email: "martin@gmail.com", age: 33, name: "Martin" },
     ],
   });
-  await prisma.social_events.createMany({
+  await prisma.socialEvents.createMany({
     data: [
       {
+        performerId: 1,
         description: "Evento numero Uno",
         rating: 4.3,
         title: "Veni a disfrutar el lola",
-        avatar_image: "sin foto",
-        banner_image: "sin banner",
+        avatar: "sin foto",
+        banner: "sin banner",
       },
       {
+        performerId: 1,
         description: "Evento numero Dos",
         rating: 4.3,
         title: "Veni a disfrutar el lola",
         type: "Music",
-        avatar_image: "sin foto",
-        banner_image: "sin banner",
+        avatar: "sin foto",
+        banner: "sin banner",
       },
       {
+        performerId: 1,
         description: "Evento numero Tres",
         rating: 4.3,
         title: "Veni a disfrutar el lola",
         type: "Music",
-        avatar_image: "sin foto",
-        banner_image: "sin banner",
+        avatar: "sin foto",
+        banner: "sin banner",
       },
     ],
   });
@@ -72,26 +85,28 @@ async function main() {
       },
     ],
   });
-  await prisma.social_event_schedule.createMany({
+  await prisma.socialEventSchedule.createMany({
     data: [
       {
         remaining: 500,
-        schedule_id: 1,
-        social_event_id: 1,
+        scheduleId: 1,
+        socialEventId: 1,
+        price: 100,
       },
       {
         remaining: 400,
-        schedule_id: 2,
-        social_event_id: 1,
+        scheduleId: 2,
+        socialEventId: 1,
         enabled: false,
+        price: 120,
       },
     ],
   });
   await prisma.orders.createMany({
     data: [
-      { price: 20.44, user_id: 1, social_event_schedule_id: 2, quantity: 2 },
-      { price: 20.44, user_id: 2, social_event_schedule_id: 2, quantity: 8 },
-      { price: 20.44, user_id: 3, social_event_schedule_id: 2, quantity: 1 },
+      { price: 20.44, userId: 1, socialEventScheduleId: 2, quantity: 2 },
+      { price: 20.44, userId: 2, socialEventScheduleId: 2, quantity: 8 },
+      { price: 20.44, userId: 3, socialEventScheduleId: 2, quantity: 1 },
     ],
   });
 }
