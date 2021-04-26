@@ -4,6 +4,7 @@
 import { Request, Response } from "express";
 
 import { PrismaClient } from "@prisma/client";
+import { catchAsync } from "../common/catch-async";
 
 const prisma = new PrismaClient();
 
@@ -11,12 +12,9 @@ const prisma = new PrismaClient();
  * Controller Definitions
  */
 
-export const getEvents = async (
-  _: Request,
-  res: Response
-): Promise<Response> => {
-  const response = await prisma.socialEvents
-    .findMany({
+export const getEvents = catchAsync(
+  async (_: Request, res: Response): Promise<Response> => {
+    const response = await prisma.socialEvents.findMany({
       select: {
         title: true,
         avatar: true,
@@ -24,26 +22,23 @@ export const getEvents = async (
         description: true,
         rating: true,
       },
-    })
-    .catch((e) => res.status(500).send(e.message));
+    });
 
-  return res.status(200).json(response);
-};
+    return res.status(200).json(response);
+  }
+);
 
-export const getEventById = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
-  const { id } = req.params;
-  const response = await prisma.socialEvents
-    .findUnique({
+export const getEventById = catchAsync(
+  async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params;
+
+    const response = await prisma.socialEvents.findUnique({
       where: { id: +id },
       include: {
         performer: true,
         socialEventSchedule: true,
       },
-    })
-    .catch((e) => res.status(500).send(e.message));
-
-  return res.status(200).json(response);
-};
+    });
+    return res.status(200).json(response);
+  }
+);
