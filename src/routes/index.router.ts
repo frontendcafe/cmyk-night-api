@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { ordersRouter } from "./orders.router";
 import { eventsRouter } from "./social-events.router";
 import { usersRouter } from "./users.router";
 
@@ -8,3 +9,4 @@ indexRouter.get("/test", (_, res) => res.status(200).send("123"));
 
 indexRouter.use("/users/", usersRouter);
 indexRouter.use("/events/", eventsRouter);
+indexRouter.use("/orders/", ordersRouter);
