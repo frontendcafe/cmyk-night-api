@@ -6,6 +6,7 @@ import { NextFunction, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { catchAsync } from "../common/catch-async";
 import { ApiError } from "../common/api-error";
+import { getUserById } from "./users.controller";
 
 const prisma = new PrismaClient();
 
@@ -50,7 +51,7 @@ export const getOrders = catchAsync(
   }
 );
 
-export const getEventById = catchAsync(
+export const getOrderById = catchAsync(
   async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
 
@@ -62,5 +63,63 @@ export const getEventById = catchAsync(
       },
     });
     return res.status(200).json(response);
+  }
+);
+
+export const createOrder = catchAsync<Response | void>(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { userId, socialEventScheduleId, quantity, price } = req.body;
+
+    if (quantity <= 0) {
+      next(
+        ApiError.badRequest(
+          `Invalid quantity, expected to be greather than 0 and received ${quantity}`
+        )
+      );
+      return;
+    }
+    if (price <= 0) {
+      next(
+        ApiError.badRequest(
+          `Invalid price, expected to be greather than 0 and received ${price}`
+        )
+      );
+      return;
+    }
+
+    const socialEventSchedule = await prisma.socialEventSchedule.findUnique({
+      where: { id: socialEventScheduleId },
+    });
+
+    if (
+      !socialEventSchedule ||
+      !socialEventSchedule.enabled ||
+      socialEventSchedule.price !== price
+    ) {
+      next(ApiError.badRequest("Invalid SocialEventSchedule."));
+      return;
+    }
+
+    const user = await prisma.users.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      next(ApiError.badRequest("Invalid User."));
+      return;
+    }
+
+    const order = await prisma.orders.create({
+      data: {
+        userId,
+        socialEventScheduleId,
+        quantity,
+        price,
+      },
+    });
+
+    return res.status(200).json(order);
   }
 );

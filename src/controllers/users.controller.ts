@@ -4,6 +4,7 @@
 import { Request, Response } from "express";
 
 import { PrismaClient } from "@prisma/client";
+import { catchAsync } from "../common/catch-async";
 
 const prisma = new PrismaClient();
 
@@ -11,73 +12,22 @@ const prisma = new PrismaClient();
  * Controller Definitions
  */
 
-export const getUsers = async (
-  _: Request,
-  res: Response
-): Promise<Response> => {
-  const response = await prisma.users
-    .findMany()
-    .catch((e) => res.status(500).send(e.message));
+export const getUsers = catchAsync(
+  async (_: Request, res: Response): Promise<Response> => {
+    const response = await prisma.users.findMany();
 
-  // response.catch((e) => res.status(500).send(e.message));
-  console.log(response);
-  return res.status(200).json(response);
-};
+    return res.status(200).json(response);
+  }
+);
 
-// export const getUserById = async (
-//   req: Request,
-//   res: Response
-// ): Promise<Response> => {
-//   const id = parseInt(req.params.id, 10);
+export const getUserById = catchAsync(
+  async (req: Request, res: Response): Promise<Response> => {
+    const id = parseInt(req.params.id, 10);
 
-//   const response = (await database
-//     .query("SELECT * FROM users WHERE id = $1", [id])
-//     .catch((e) => res.status(500).send(e.message))) as QueryResult;
-//   return res
-//     .status(200)
-//     .send({ getUserById: response.rows.length ? { ...response.rows[0] } : {} });
-// };
+    const response = await prisma.users.findUnique({
+      where: { id },
+    });
 
-// export const createUser = async (
-//   req: Request,
-//   res: Response
-// ): Promise<Response> => {
-//   const { email, name, age, created_at, updated_at } = req.body;
-//   (await database
-//     .query(
-//       "INSERT INTO users (email, name, age, created_at, updated_at) VALUES ($1,$2,$3,$4,$5)",
-//       [email, name, age, created_at, updated_at]
-//     )
-//     .catch((e) => res.status(500).send(e.message))) as QueryResult;
-//   return res.status(200).send({
-//     createUser: { email, name, age, created_at, updated_at },
-//     message: "User created successfuly",
-//   });
-// };
-
-// export const updateUser = async (
-//   req: Request,
-//   res: Response
-// ): Promise<Response> => {
-//   const id = parseInt(req.params.id, 10);
-//   const { name } = req.body;
-//   const response = (await database
-//     .query("UPDATE users SET  name = $2 WHERE id = $1", [id, name])
-//     .catch((e) => res.status(500).send(e.message))) as QueryResult;
-//   return res
-//     .status(200)
-//     .send({ message: `User ${id} has been sucessfully updated.` });
-// };
-
-// export const deleteUser = async (
-//   req: Request,
-//   res: Response
-// ): Promise<Response> => {
-//   const id = parseInt(req.params.id, 10);
-//   (await database
-//     .query("DELETE FROM users WHERE id = $1", [id])
-//     .catch((e) => res.status(500).send(e.message))) as QueryResult;
-//   return res
-//     .status(200)
-//     .send({ message: `User ${id} has been sucessfully deleted.` });
-// };
+    return res.status(200).send(response);
+  }
+);
