@@ -33,7 +33,11 @@ export const getEventById = catchAsync(
       where: { id: +id },
       include: {
         performer: true,
-        socialEventSchedule: true,
+        socialEventSchedule: {
+          include: {
+            schedule: true,
+          },
+        },
       },
     });
     return res.status(200).json(response);
