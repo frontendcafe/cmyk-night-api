@@ -15,12 +15,9 @@ const prisma = new PrismaClient();
 export const getEvents = catchAsync(
   async (_: Request, res: Response): Promise<Response> => {
     const response = await prisma.socialEvents.findMany({
-      select: {
-        title: true,
-        avatar: true,
-        banner: true,
-        description: true,
-        rating: true,
+      include: {
+        performer: true,
+        socialEventSchedule: true,
       },
     });
 
