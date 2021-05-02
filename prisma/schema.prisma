@@ -82,33 +82,33 @@ model Users {
   @@map("users")
 }
 
-model Days {
-  id               Int            @id @default(autoincrement())
-  index            Int
-  available        Boolean        @default(false)
-  AttentionHours   AttentionHours @relation(fields: [attentionHoursId], references: [id])
-  attentionHoursId Int            @map("attention_hours_id")
+model Day {
+  id             Int              @id @default(autoincrement())
+  index          Int
+  available      Boolean          @default(false)
+  AttentionHours AttentionHours[]
 
-  @@map("days")
+  @@map("day")
 }
 
-model Hours {
-  id               Int            @id @default(autoincrement())
-  from             Int
-  to               Int
-  AttentionHours   AttentionHours @relation(fields: [attentionHoursId], references: [id])
-  attentionHoursId Int            @map("attention_hours_id")
+model Hour {
+  id             Int              @id @default(autoincrement())
+  from           Int
+  to             Int
+  AttentionHours AttentionHours[]
 
-  @@map("hours")
+  @@map("hour")
 }
 
 model AttentionHours {
-  id    Int     @id @default(autoincrement())
-  days  Days[]
-  hours Hours[]
+  id         Int      @id @default(autoincrement())
+  dayId      Int
+  day        Day      @relation(fields: [dayId], references: [id])
+  hourId     Int
+  hour       Hour     @relation(fields: [hourId], references: [id])
+  locationId Int      @map("location_id")
+  location   Location @relation(fields: [locationId], references: [id])
 
-  Location   Location? @relation(fields: [locationId], references: [id])
-  locationId Int?      @map("location_id")
   @@map("attention_hours")
 }
 

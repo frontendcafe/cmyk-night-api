@@ -90,28 +90,28 @@ async function main() {
   await prisma.schedules.createMany({
     data: [
       {
-        datetime: new Date("2021-04-29 10:00"),
+        datetime: new Date("2021-05-29 10:00"),
       },
       {
-        datetime: new Date("2021-04-29 12:00"),
+        datetime: new Date("2021-05-29 12:00"),
       },
       {
-        datetime: new Date("2021-04-30 18:30"),
+        datetime: new Date("2021-05-30 18:30"),
       },
       {
-        datetime: new Date("2021-04-30 19:30"),
+        datetime: new Date("2021-05-30 19:30"),
       },
       {
-        datetime: new Date("2021-04-30 23:30"),
+        datetime: new Date("2021-05-30 23:30"),
       },
       {
-        datetime: new Date("2021-04-30 00:30"),
+        datetime: new Date("2021-05-30 00:30"),
       },
       {
-        datetime: new Date("2021-05-01 2:30"),
+        datetime: new Date("2021-06-01 2:30"),
       },
       {
-        datetime: new Date("2021-05-01 22:30"),
+        datetime: new Date("2021-06-01 22:30"),
       },
     ],
   });
@@ -170,7 +170,7 @@ async function main() {
   await prisma.address.createMany({
     data: [
       {
-        formatted: "Teatro Gran Rex, Avenida Corrientes, AAI, Buenos Aires",
+        formatted: "Av. Corrientes 857, C1043AAI, C1043 AAI, Buenos Aires",
         city: "Ciudad Autonoma de Buenos Aires",
         state: "BS",
         country: "AR",
@@ -181,6 +181,42 @@ async function main() {
     data: [
       {
         total: 3262,
+      },
+    ],
+  });
+  await prisma.hour.createMany({
+    data: [
+      {
+        from: 12,
+        to: 20,
+      },
+    ],
+  });
+  await prisma.day.createMany({
+    data: [
+      {
+        index: 0,
+        available: false,
+      },
+      {
+        index: 1,
+      },
+      {
+        index: 2,
+      },
+      {
+        index: 3,
+      },
+      {
+        index: 4,
+      },
+      {
+        index: 5,
+      },
+      {
+        index: 6,
+
+        available: false,
       },
     ],
   });
@@ -196,32 +232,39 @@ async function main() {
   await prisma.attentionHours.createMany({
     data: [
       {
+        dayId: 1,
+        hourId: 1,
         locationId: 1,
       },
-    ],
-  });
-  await prisma.hours.createMany({
-    data: [
       {
-        attentionHoursId: 1,
-        from: 12,
-        to: 20,
-      },
-    ],
-  });
-  await prisma.days.createMany({
-    data: [
-      {
-        index: 0,
-        attentionHoursId: 1,
+        dayId: 2,
+        hourId: 1,
+        locationId: 1,
       },
       {
-        index: 1,
-        attentionHoursId: 1,
+        dayId: 3,
+        hourId: 1,
+        locationId: 1,
       },
       {
-        index: 2,
-        attentionHoursId: 1,
+        dayId: 4,
+        hourId: 1,
+        locationId: 1,
+      },
+      {
+        dayId: 5,
+        hourId: 1,
+        locationId: 1,
+      },
+      {
+        dayId: 6,
+        hourId: 1,
+        locationId: 1,
+      },
+      {
+        dayId: 7,
+        hourId: 1,
+        locationId: 1,
       },
     ],
   });
