@@ -15,7 +15,7 @@ model SocialEvents {
   avatar              String                @map("avatar_image") @db.VarChar(255)
   banner              String                @map("banner_image") @db.VarChar(255)
   rating              Float
-  type                type?                 @default(Online)
+  type                type                  @default(Online)
   socialEventSchedule SocialEventSchedule[]
   performer           Artists               @relation(fields: [performerId], references: [id])
   performerId         Int                   @map("performer_id")
@@ -30,12 +30,16 @@ model Artists {
   email        String         @unique @db.VarChar(255)
   age          Int
   SocialEvents SocialEvents[]
+
+  @@map("artists")
 }
 
 model Schedules {
   id                  Int                   @id @default(autoincrement())
   datetime            DateTime
   socialEventSchedule SocialEventSchedule[]
+
+  @@map("schedules")
 }
 
 model SocialEventSchedule {
@@ -76,6 +80,69 @@ model Users {
   orders    Orders[]
 
   @@map("users")
+}
+
+model Days {
+  id               Int            @id @default(autoincrement())
+  index            Int
+  available        Boolean        @default(false)
+  AttentionHours   AttentionHours @relation(fields: [attentionHoursId], references: [id])
+  attentionHoursId Int            @map("attention_hours_id")
+
+  @@map("days")
+}
+
+model Hours {
+  id               Int            @id @default(autoincrement())
+  from             Int
+  to               Int
+  AttentionHours   AttentionHours @relation(fields: [attentionHoursId], references: [id])
+  attentionHoursId Int            @map("attention_hours_id")
+
+  @@map("hours")
+}
+
+model AttentionHours {
+  id    Int     @id @default(autoincrement())
+  days  Days[]
+  hours Hours[]
+
+  Location   Location? @relation(fields: [locationId], references: [id])
+  locationId Int?      @map("location_id")
+  @@map("attention_hours")
+}
+
+model Location {
+  id             Int              @id @default(autoincrement())
+  addressId      Int              @map("address_id")
+  name           String           @db.VarChar(255)
+  address        Address          @relation(fields: [addressId], references: [id])
+  capacityId     Int              @map("capacity_id")
+  capacity       Capacity         @relation(fields: [capacityId], references: [id])
+  attentionHours AttentionHours[]
+
+  @@map("location")
+}
+
+model Capacity {
+  id          Int        @id @default(autoincrement())
+  total       Int
+  minQuantity Int?       @map("min_quantity")
+  maxQuantity Int?       @map("max_quantity")
+  Location    Location[]
+
+  @@map("capacity")
+}
+
+model Address {
+  id        Int    @id @default(autoincrement())
+  formatted String @map("Formatted") @db.VarChar(255)
+  city      String @map("City") @db.VarChar(120)
+  state     String @map("State") @db.Char(2)
+  country   String @map("Country") @db.Char(2)
+
+  Location Location[]
+  @@map("address")
 }
 
 enum type {

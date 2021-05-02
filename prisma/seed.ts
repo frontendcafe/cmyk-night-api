@@ -167,6 +167,64 @@ async function main() {
       },
     ],
   });
+  await prisma.address.createMany({
+    data: [
+      {
+        formatted: "Teatro Gran Rex, Avenida Corrientes, AAI, Buenos Aires",
+        city: "Ciudad Autonoma de Buenos Aires",
+        state: "BS",
+        country: "AR",
+      },
+    ],
+  });
+  await prisma.capacity.createMany({
+    data: [
+      {
+        total: 3262,
+      },
+    ],
+  });
+  await prisma.location.createMany({
+    data: [
+      {
+        name: "Gran Rex",
+        addressId: 1,
+        capacityId: 1,
+      },
+    ],
+  });
+  await prisma.attentionHours.createMany({
+    data: [
+      {
+        locationId: 1,
+      },
+    ],
+  });
+  await prisma.hours.createMany({
+    data: [
+      {
+        attentionHoursId: 1,
+        from: 12,
+        to: 20,
+      },
+    ],
+  });
+  await prisma.days.createMany({
+    data: [
+      {
+        index: 0,
+        attentionHoursId: 1,
+      },
+      {
+        index: 1,
+        attentionHoursId: 1,
+      },
+      {
+        index: 2,
+        attentionHoursId: 1,
+      },
+    ],
+  });
 }
 
 main()
