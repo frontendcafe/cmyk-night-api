@@ -35,13 +35,15 @@ export const getLocationById = catchAsync(
   async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
 
-    const response = await prisma.socialEvents.findUnique({
+    const response = await prisma.location.findUnique({
       where: { id: +id },
       include: {
-        performer: true,
-        socialEventSchedule: {
-          include: {
-            schedule: true,
+        address: true,
+        capacity: true,
+        attentionHours: {
+          select: {
+            day: true,
+            hour: true,
           },
         },
       },
