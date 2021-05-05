@@ -19,6 +19,8 @@ model SocialEvents {
   socialEventSchedule SocialEventSchedule[]
   performer           Artists               @relation(fields: [performerId], references: [id])
   performerId         Int                   @map("performer_id")
+  location            Location              @relation(fields: [locationId], references: [id])
+  locationId          Int
 
   @@map("social_events")
 }
@@ -121,6 +123,7 @@ model Location {
   capacity       Capacity         @relation(fields: [capacityId], references: [id])
   attentionHours AttentionHours[]
 
+  SocialEvents SocialEvents[]
   @@map("location")
 }
 

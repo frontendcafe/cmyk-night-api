@@ -5,6 +5,7 @@ import { Request, Response } from "express";
 
 import { PrismaClient } from "@prisma/client";
 import { catchAsync } from "../common/catch-async";
+import { transformDocument } from "@prisma/client/runtime";
 
 const prisma = new PrismaClient();
 
@@ -15,9 +16,50 @@ const prisma = new PrismaClient();
 export const getEvents = catchAsync(
   async (_: Request, res: Response): Promise<Response> => {
     const response = await prisma.socialEvents.findMany({
-      include: {
-        performer: true,
-        socialEventSchedule: true,
+      select: {
+        avatar: true,
+        banner: true,
+        description: true,
+        id: true,
+        rating: true,
+        title: true,
+        type: true,
+        performer: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        socialEventSchedule: {
+          select: {
+            id: true,
+            remaining: true,
+            enabled: true,
+            price: true,
+          },
+        },
+        location: {
+          select: {
+            id: true,
+            address: {
+              select: {
+                id: true,
+                formatted: true,
+                city: true,
+                state: true,
+                country: true,
+              },
+            },
+            attentionHours: {
+              select: {
+                id: true,
+                day: true,
+                hour: true,
+              },
+            },
+          },
+        },
       },
     });
 
